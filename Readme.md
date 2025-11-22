@@ -23,7 +23,7 @@ I found veery Spinballs old theme on 4PDA site. I tried that oldie, but game don
 - VSCode/KiloCode's Qwen-3 AI used for simple gamedev "recovering" 
 
 ## Task List
-- [ ] Fix game cotro (tune touch mode, add mouse mode)
+- [ ] Fix game controls (tune touch mode, add mouse mode)
 - [ ] Fix game scaling
 - [ ] Check sound / music theme
 
