@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="BuyGame" xml:space="preserve">
+    <value>Buy</value>
+  </data>
+  <data name="BestScore" xml:space="preserve">
+    <value>Best Score</value>
+  </data>
+  <data name="Spinballs" xml:space="preserve">
+    <value>Spinballs</value>
+  </data>
+  <data name="ContinueGame" xml:space="preserve">
+    <value>Continue Game</value>
+  </data>
+  <data name="Points" xml:space="preserve">
+    <value>Points</value>
+  </data>
+  <data name="Tutorial" xml:space="preserve">
+    <value>Tutorial</value>
+  </data>
+  <data name="Tutorial1" xml:space="preserve">
+    <value>Try to connect balls having the same color by tapping the right side of a disc to turn it clockwise. Tap the left side to turn it counter clockwise.</value>
+  </data>
+  <data name="Tutorial3" xml:space="preserve">
+    <value>Load the four bonus helpers by clearing balls next to them. Once they are fully loaded they can be executed by tapping them.</value>
+  </data>
+  <data name="Tutorial2" xml:space="preserve">
+    <value>Clear the highlighted balls by pressing the execute button at the bottom of the screen. The number on it indicates how many balls are connected.</value>
+  </data>
+  <data name="MainMenu" xml:space="preserve">
+    <value>Main Menu</value>
+  </data>
+  <data name="Highscore" xml:space="preserve">
+    <value>High Scores</value>
+  </data>
+  <data name="Music" xml:space="preserve">
+    <value>Music</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="Trial" xml:space="preserve">
+    <value>Do you like Spinballs? Get yourself today the full version of Spinballs for unlimited fun!</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Sound" xml:space="preserve">
+    <value>Sound</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="NewHighScore" xml:space="preserve">
+    <value>New High Score</value>
+  </data>
+  <data name="ExitGame" xml:space="preserve">
+    <value>Exit Game</value>
+  </data>
+  <data name="GameOver" xml:space="preserve">
+    <value>Game Over</value>
+  </data>
+  <data name="PlayAgain" xml:space="preserve">
+    <value>Play Again</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="TrialTitle" xml:space="preserve">
+    <value>Trial Version</value>
+  </data>
+  <data name="NoHighScore" xml:space="preserve">
+    <value>No High Score achieved</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="TutorialTitle" xml:space="preserve">
+    <value>How To Play</value>
+  </data>
+  <data name="GamePaused" xml:space="preserve">
+    <value>Game Paused</value>
+  </data>
+  <data name="Fullversion" xml:space="preserve">
+    <value>Full Version</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Rank" xml:space="preserve">
+    <value>Rank</value>
+  </data>
+</root>
