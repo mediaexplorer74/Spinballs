@@ -1,4 +1,4 @@
-# Spinballs 1.1 -- main branch
+# Spinballs 1.1 -- dev branch
 
 ![Logo](Images/logo.png)
 
