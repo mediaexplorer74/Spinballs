@@ -75,23 +75,27 @@ namespace Spinballs.Controller
 
     public override void HandleTap(Vector2 tapPos, GameTime gameTime)
     {
-      base.HandleTap(tapPos, gameTime);
-      for (int discIndex = 0; discIndex < Layout.DiscCount; ++discIndex)
-      {
-        if (this.DiscContains(discIndex, tapPos))
+        #if DEBUG
+        System.Diagnostics.Debug.WriteLine($"DiscController.HandleTap called with position: ({tapPos.X}, {tapPos.Y})");
+        #endif
+        
+        base.HandleTap(tapPos, gameTime);
+        for (int discIndex = 0; discIndex < Layout.DiscCount; ++discIndex)
         {
-          if ((double) tapPos.X <= (double) Layout.GetDiscCenter(discIndex).X)
-          {
-            this.RotateDisc(discIndex, false);
-            this.HighlightDisc(discIndex * 2 + 1);
-          }
-          else
-          {
-            this.RotateDisc(discIndex, true);
-            this.HighlightDisc(discIndex * 2);
-          }
+            if (this.DiscContains(discIndex, tapPos))
+            {
+                if ((double) tapPos.X <= (double) Layout.GetDiscCenter(discIndex).X)
+                {
+                    this.RotateDisc(discIndex, false);
+                    this.HighlightDisc(discIndex * 2 + 1);
+                }
+                else
+                {
+                    this.RotateDisc(discIndex, true);
+                    this.HighlightDisc(discIndex * 2);
+                }
+            }
         }
-      }
     }
 
     protected override void UpdateCore(GameTime gameTime)
@@ -108,7 +112,7 @@ namespace Spinballs.Controller
 
     private bool DiscContains(int discIndex, Vector2 pos)
     {
-      return new Circle(Layout.GetDiscCenter(discIndex), (float) Layout.DiscBoundsRadius).Contains(pos);
+        return new Circle(Layout.GetDiscCenter(discIndex), (float) Layout.DiscBoundsRadius).Contains(pos);
     }
 
     private void RotateDisc(int discIndex, bool clockwise)

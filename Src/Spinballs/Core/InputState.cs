@@ -21,6 +21,8 @@ namespace Spinballs.Core
     public readonly GamePadState[] LastGamePadStates;
     public readonly bool[] GamePadWasConnected;
     public TouchCollection TouchState;
+    public MouseState CurrentMouseState;
+    public MouseState LastMouseState;
     public readonly List<GestureSample> Gestures = new List<GestureSample>();
 
     public InputState()
@@ -34,19 +36,43 @@ namespace Spinballs.Core
 
     public void Update()
     {
-      for (int index = 0; index < 4; ++index)
-      {
-        this.LastKeyboardStates[index] = this.CurrentKeyboardStates[index];
-        this.LastGamePadStates[index] = this.CurrentGamePadStates[index];
-        this.CurrentKeyboardStates[index] = Keyboard.GetState((PlayerIndex) index);
-        this.CurrentGamePadStates[index] = GamePad.GetState((PlayerIndex) index);
-        if (this.CurrentGamePadStates[index].IsConnected)
-          this.GamePadWasConnected[index] = true;
-      }
-      this.TouchState = TouchPanel.GetState();
-      this.Gestures.Clear();
-      while (TouchPanel.IsGestureAvailable)
-        this.Gestures.Add(TouchPanel.ReadGesture());
+        for (int index = 0; index < 4; ++index)
+        {
+            this.LastKeyboardStates[index] = this.CurrentKeyboardStates[index];
+            this.LastGamePadStates[index] = this.CurrentGamePadStates[index];
+            this.CurrentKeyboardStates[index] = Keyboard.GetState((PlayerIndex) index);
+            this.CurrentGamePadStates[index] = GamePad.GetState((PlayerIndex) index);
+            if (this.CurrentGamePadStates[index].IsConnected)
+                this.GamePadWasConnected[index] = true;
+        }
+        this.TouchState = TouchPanel.GetState();
+        this.Gestures.Clear();
+        while (TouchPanel.IsGestureAvailable)
+            this.Gestures.Add(TouchPanel.ReadGesture());
+        
+        // Обновляем состояние мыши
+        this.LastMouseState = this.CurrentMouseState;
+        this.CurrentMouseState = Mouse.GetState();
+        
+        // Добавляем диагностику для отслеживания состояния ввода
+        #if DEBUG
+        if (this.CurrentMouseState.LeftButton == ButtonState.Pressed && this.LastMouseState.LeftButton == ButtonState.Released)
+        {
+            System.Diagnostics.Debug.WriteLine($"Mouse clicked at: ({this.CurrentMouseState.X}, {this.CurrentMouseState.Y})");
+        }
+        if (this.CurrentKeyboardStates[0].IsKeyDown(Keys.Space) && this.LastKeyboardStates[0].IsKeyUp(Keys.Space))
+        {
+            System.Diagnostics.Debug.WriteLine("Space key pressed");
+        }
+        if (this.CurrentKeyboardStates[0].IsKeyDown(Keys.Enter) && this.LastKeyboardStates[0].IsKeyUp(Keys.Enter))
+        {
+            System.Diagnostics.Debug.WriteLine("Enter key pressed");
+        }
+        if (this.CurrentKeyboardStates[0].IsKeyDown(Keys.Escape) && this.LastKeyboardStates[0].IsKeyUp(Keys.Escape))
+        {
+            System.Diagnostics.Debug.WriteLine("Escape key pressed");
+        }
+        #endif
     }
 
     public bool IsNewKeyPress(
@@ -101,8 +127,72 @@ namespace Spinballs.Core
 
     public bool IsPauseGame(PlayerIndex? controllingPlayer)
     {
-      PlayerIndex playerIndex;
-      return this.IsNewKeyPress(Keys.Escape, controllingPlayer, out playerIndex) || this.IsNewButtonPress(Buttons.Back, controllingPlayer, out playerIndex) || this.IsNewButtonPress(Buttons.Start, controllingPlayer, out playerIndex);
+        PlayerIndex playerIndex;
+        return this.IsNewKeyPress(Keys.Escape, controllingPlayer, out playerIndex) || this.IsNewButtonPress(Buttons.Back, controllingPlayer, out playerIndex) || this.IsNewButtonPress(Buttons.Start, controllingPlayer, out playerIndex);
     }
-  }
+
+    public bool IsNewMouseButtonPress(MouseButtons button)
+    {
+            // Обновляем состояние мыши
+            //this.LastMouseState = this.CurrentMouseState;
+            this.CurrentMouseState = Mouse.GetState();
+            //switch (button)
+            //{
+            //    case MouseButtons.Left:
+                      
+            if (this.CurrentMouseState.LeftButton == ButtonState.Pressed)//&& this.LastMouseState.LeftButton == ButtonState.Released)
+                return true;
+            //    case MouseButtons.Right:
+            if (this.CurrentMouseState.RightButton == ButtonState.Pressed)// && this.LastMouseState.RightButton == ButtonState.Released)
+                return true;
+            //    case MouseButtons.Middle:
+            if (this.CurrentMouseState.MiddleButton == ButtonState.Pressed)// && this.LastMouseState.MiddleButton == ButtonState.Released)
+                return true;
+        //    default:
+                return false;
+        //}
+    }
+
+    public Vector2 MousePosition => new Vector2(this.CurrentMouseState.X, this.CurrentMouseState.Y);
+
+    // Метод для проверки, нажата ли клавиша
+    public bool IsKeyPress(Keys key)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (this.CurrentKeyboardStates[i].IsKeyDown(key))
+                return true;
+        }
+        return false;
+    }
+
+    // Метод для проверки, удерживается ли клавиша
+    public bool IsKeyDown(Keys key)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (this.CurrentKeyboardStates[i].IsKeyDown(key))
+                return true;
+        }
+        return false;
+    }
+
+    // Метод для проверки, отпущена ли клавиша
+    public bool IsKeyUp(Keys key)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (this.CurrentKeyboardStates[i].IsKeyUp(key))
+                return true;
+        }
+        return false;
+    }
+}
+
+public enum MouseButtons
+{
+    Left,
+    Right,
+    Middle
+}
 }

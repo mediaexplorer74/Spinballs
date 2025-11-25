@@ -7,6 +7,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Input;
 using Spinballs.Common.Helper;
 using Spinballs.Controller;
 using Spinballs.Controller.Extra;
@@ -15,6 +16,7 @@ using Spinballs.Core.ScreenManagement;
 using Spinballs.Document;
 using System;
 using System.Collections.Generic;
+using Spinballs.Core;
 
 #nullable disable
 namespace Spinballs.View
@@ -179,17 +181,49 @@ namespace Spinballs.View
 
     public override void Update(GameTime gameTime)
     {
-      base.Update(gameTime);
-      if (Res.IsTrial)
-      {
-        this._trialPlaytime += gameTime.ElapsedGameTime;
-        if (this._trialPlaytime > Constants.TrialDuration && this.Document.State == GameState.Running)
-          this.Document.State = GameState.Trial;
-      }
-      this.Document.Update(gameTime);
-      foreach (ControllerBase controller in this._controllerList)
-        controller.Update(gameTime);
+        base.Update(gameTime);
+        if (Res.IsTrial)
+        {
+            this._trialPlaytime += gameTime.ElapsedGameTime;
+            if (this._trialPlaytime > Constants.TrialDuration && this.Document.State == GameState.Running)
+                this.Document.State = GameState.Trial;
+        }
+        this.Document.Update(gameTime);
+        foreach (ControllerBase controller in this._controllerList)
+            controller.Update(gameTime);
+            
+        #if DEBUG
+        // Диагностика для отслеживания ввода мыши и клавиатуры
+        if (Res.Input.IsNewMouseButtonPress(MouseButtons.Left))
+        {
+            var mousePos = Res.GetMousePositionInGameCoords();
+            System.Diagnostics.Debug.WriteLine(
+                $"Mouse tap detected at physical position: ({Res.Input.CurrentMouseState.X}, {Res.Input.CurrentMouseState.Y}), game coordinates: ({mousePos.X}, {mousePos.Y})");
+        }
+        #endif
+        
+        // Обработка ввода - теперь включена в Update методе базового класса
+        // Но GameScreen может добавить свою специфичную обработку ввода здесь, если нужно
     }
+
+    // Удален метод HandleInput, так как он не переопределяет существующий виртуальный метод
+
+    public override void HandleTap(Vector2 tapPos, GameTime gameTime)
+    {
+        #if DEBUG
+        System.Diagnostics.Debug.WriteLine($"GameScreen.HandleTap called with position: ({tapPos.X}, {tapPos.Y})");
+        #endif
+        
+        // Вызов базовой реализации
+        base.HandleTap(tapPos, gameTime);
+        
+        // Обработка нажатия на диски и другие элементы
+        foreach (ControllerBase controller in this._controllerList)
+        {
+            controller.HandleTap(tapPos, gameTime);
+        }
+    }
+
 
     protected override void DrawCore(SpriteBatch spriteBatch, GameTime gameTime)
     {
@@ -215,7 +249,8 @@ namespace Spinballs.View
 
     public override bool Save(SaveGame savegame)
     {
-      if (this.Document.State == GameState.None || this.Document.State == GameState.Starting || this.Document.State == GameState.End || this.Document.State == GameState.Trial)
+      if (this.Document.State == GameState.None || this.Document.State == GameState.Starting 
+                || this.Document.State == GameState.End || this.Document.State == GameState.Trial)
         return false;
       base.Save(savegame);
       for (int index = 0; index < this.Balls.Length; ++index)

@@ -89,9 +89,56 @@ namespace Spinballs.Core.ScreenManagement
 
     public virtual void Update(GameTime gameTime)
     {
-      if (this.Enabled && Res.Input.IsNewButtonPress(Buttons.Back, new PlayerIndex?(), out PlayerIndex _))
-        this.OnBackButton(gameTime);
-      this._actionManager.Update(gameTime);
+        if (this.Enabled && Res.Input.IsNewButtonPress(Buttons.Back, new PlayerIndex?(), out PlayerIndex _))
+            this.OnBackButton(gameTime);
+        this._actionManager.Update(gameTime);
+        
+        // Обработка мышиных событий
+        if (this.Enabled && Res.Input.IsNewMouseButtonPress(MouseButtons.Left))
+        {
+            Vector2 mousePos = Res.GetMousePositionInGameCoords();
+            #if DEBUG
+            System.Diagnostics.Debug.WriteLine($"BaseScreen processing mouse tap at game coords: ({mousePos.X}, {mousePos.Y})");
+            #endif
+            this.HandleTap(mousePos, gameTime);
+        }
+        
+        // Обработка клавиатурных событий
+        if (this.Enabled)
+        {
+            PlayerIndex playerIndex;
+            if (Res.Input.IsNewKeyPress(Keys.Space, new PlayerIndex?(), out playerIndex))
+            {
+                #if DEBUG
+                System.Diagnostics.Debug.WriteLine("Space key pressed");
+                #endif
+                // Обработка нажатия пробела
+                this.HandleTap(new Vector2(240, 400), gameTime); // Центр экрана
+            }
+            else if (Res.Input.IsNewKeyPress(Keys.Enter, new PlayerIndex?(), out playerIndex))
+            {
+                #if DEBUG
+                System.Diagnostics.Debug.WriteLine("Enter key pressed");
+                #endif
+                // Обработка нажатия Enter
+                this.HandleTap(new Vector2(240, 400), gameTime); // Центр экрана
+            }
+            else if (Res.Input.IsNewKeyPress(Keys.Escape, new PlayerIndex?(), out playerIndex))
+            {
+                #if DEBUG
+                System.Diagnostics.Debug.WriteLine("Escape key pressed");
+                #endif
+                // Обработка нажатия Escape
+                this.OnBackButton(gameTime);
+            }
+        }
+    }
+
+    public virtual void HandleTap(Vector2 tapPos, GameTime gameTime)
+    {
+        #if DEBUG
+        System.Diagnostics.Debug.WriteLine($"BaseScreen.HandleTap called with position: ({tapPos.X}, {tapPos.Y})");
+        #endif
     }
 
     public virtual void OnBackButton(GameTime gameTime) => Res.Game.Exit();
@@ -113,8 +160,8 @@ namespace Spinballs.Core.ScreenManagement
 
     public virtual bool Save(SaveGame savegame)
     {
-      savegame.ActiveScreenId = this.Id;
-      return true;
+        savegame.ActiveScreenId = this.Id;
+        return true;
     }
 
     public virtual void Load(SaveGame savegame)
@@ -126,5 +173,6 @@ namespace Spinballs.Core.ScreenManagement
     public virtual void Pause()
     {
     }
+
   }
 }

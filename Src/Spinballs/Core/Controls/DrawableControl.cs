@@ -73,5 +73,14 @@ namespace Spinballs.Core.Controls
     }
 
     public abstract void Draw(SpriteBatch spriteBatch);
-  }
+}
+
+public static class ControlExtensions
+{
+    public static bool Contains(this DrawableControl control, Vector2 point)
+    {
+        Rectangle bounds = new Rectangle((int)control.Position.X, (int)control.Position.Y, (int)control.Size.X, (int)control.Size.Y);
+        return bounds.Contains((int)point.X, (int)point.Y);
+    }
+}
 }

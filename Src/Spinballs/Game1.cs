@@ -30,6 +30,7 @@ namespace Spinballs
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private Microsoft.Xna.Framework.Matrix globalScaleMatrix = Microsoft.Xna.Framework.Matrix.Identity;
 
         public ScreenManager ScreenManager { get; private set; }
         public static SaveGame PendingSaveGame { get; set; }
@@ -40,14 +41,27 @@ namespace Spinballs
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
+            // Включаем возможность изменения размера окна
+            graphics.SupportedOrientations = DisplayOrientation.Default;
+            graphics.PreferredBackBufferWidth = 480;
+            graphics.PreferredBackBufferHeight = 800;
+            graphics.IsFullScreen = true;//false;
+
             // Инициализируем Res
             //Res.Init(this);
-            //RnD
-            //Res.SpriteBatch = new SpriteBatch(GraphicsDevice);
+           
         }
 
         protected override void Initialize()
         {
+            // Настройка графики для масштабирования
+            graphics.PreferredBackBufferWidth = 480;  // Ширина оригинального экрана
+            graphics.PreferredBackBufferHeight = 800; // Высота оригинального экрана
+            graphics.ApplyChanges();
+
+            // Подписываемся на события изменения размера экрана
+            graphics.DeviceReset += OnDeviceReset;
+
             // Создаем ScreenManager
             ScreenManager = new ScreenManager(this);
             Components.Add(ScreenManager);
@@ -58,6 +72,12 @@ namespace Spinballs
             ScreenManager.AddScreen(new GameScreen());
 
             base.Initialize();
+        }
+
+        private void OnDeviceReset(object sender, EventArgs e)
+        {
+            // Обновляем масштаб при изменении размера устройства
+            UpdateCoordinateTransform();
         }
 
         protected override void LoadContent()
@@ -86,6 +106,12 @@ namespace Spinballs
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 Exit();
 
+            // Обновляем состояние ввода
+            Res.Input.Update();
+
+            // Сохраняем последнее GameTime
+            LastGameTime = gameTime;
+
             base.Update(gameTime);
         }
 
@@ -93,7 +119,75 @@ namespace Spinballs
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            // Вычисляем масштаб для адаптации к различным размерам экрана
+            CalculateGlobalScale();
+
+            // Устанавливаем ScaleFactor и ScreenOffset для преобразования координат
+            UpdateCoordinateTransform();
+
+            // Рисуем с учетом масштаба
+            spriteBatch.Begin(transformMatrix: globalScaleMatrix);
             base.Draw(gameTime);
+            spriteBatch.End();
         }
+
+        private void UpdateCoordinateTransform()
+        {
+            // Получаем размеры окна
+            int windowWidth = GraphicsDevice.Viewport.Width;
+            int windowHeight = GraphicsDevice.Viewport.Height;
+
+            // Размеры оригинального игрового поля
+            const int originalWidth = 480;
+            const int originalHeight = 800;
+
+            // Вычисляем масштаб по ширине и высоте
+            float scaleX = (float)windowWidth / originalWidth;
+            float scaleY = (float)windowHeight / originalHeight;
+
+            // Используем минимальный масштаб, чтобы всё помещалось на экране
+            float scale = Math.Min(scaleX, scaleY);
+
+            // Вычисляем смещение, чтобы игра была по центру
+            float offsetX = (windowWidth - originalWidth * scale) / 2f;
+            float offsetY = (windowHeight - originalHeight * scale) / 2f;
+
+            // Устанавливаем значения для преобразования координат
+            Res.ScaleFactor = new Microsoft.Xna.Framework.Vector2(scale, scale);
+            Res.ScreenOffset = new Microsoft.Xna.Framework.Vector2(offsetX, offsetY);
+            
+            #if DEBUG
+            // System.Diagnostics.Debug.WriteLine($"Viewport: {windowWidth}x{windowHeight}, Scale: {scale}, Offset: ({offsetX}, {offsetY})");
+            #endif
+        }
+
+        public GameTime LastGameTime { get; private set; }
+
+
+        private void CalculateGlobalScale()
+        {
+            // Получаем размеры окна
+            int windowWidth = GraphicsDevice.Viewport.Width;
+            int windowHeight = GraphicsDevice.Viewport.Height;
+
+            // Размеры оригинального игрового поля
+            const int originalWidth = 480;
+            const int originalHeight = 800;
+
+            // Вычисляем масштаб по ширине и высоте
+            float scaleX = (float)windowWidth / originalWidth;
+            float scaleY = (float)windowHeight / originalHeight;
+
+            // Используем минимальный масштаб, чтобы всё помещалось на экране
+            float scale = Math.Min(scaleX, scaleY);
+
+            // Вычисляем смещение, чтобы игра была по центру
+            float offsetX = (windowWidth - originalWidth * scale) / 2f;
+            float offsetY = (windowHeight - originalHeight * scale) / 2f;
+
+            // Создаем матрицу трансформации
+            globalScaleMatrix = Microsoft.Xna.Framework.Matrix.CreateScale(scale) * Microsoft.Xna.Framework.Matrix.CreateTranslation(offsetX, offsetY, 0);
+        }
+
     }
 }

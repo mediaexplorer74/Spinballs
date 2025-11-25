@@ -40,7 +40,8 @@ namespace Spinballs.View
       this._points.Texture = Res.Common.LoadIconText;
       this._points.Size = new Vector2(256f, 86f);
       this._points.Position = Layout.SplashPoints;
-      this._actionHighlight = (ActionBase) new ActionRepeat((ActionBase) new ActionFadeIn((DrawableControl) this._points, TimeSpan.FromMilliseconds(1000.0)));
+      this._actionHighlight = (ActionBase) 
+                new ActionRepeat((ActionBase) new ActionFadeIn((DrawableControl) this._points, TimeSpan.FromMilliseconds(1000.0)));
       this._actionHighlight.ActionManager = this.ActionManager;
       this._actionHighlight.Start();
       // Загружаем ресурсы в текущем потоке, так как Thread не доступен в UWP

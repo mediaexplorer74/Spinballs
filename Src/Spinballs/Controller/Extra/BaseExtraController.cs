@@ -159,7 +159,8 @@ namespace Spinballs.Controller.Extra
 
     private void StateManager_Changed(object sender, StateChangeToken args)
     {
-      if (this.Document.State != GameState.ClearBalls && this.Document.State != GameState.BonusExplode && this.Document.State != GameState.BonusSortBalls)
+      if (this.Document.State != GameState.ClearBalls && this.Document.State != GameState.BonusExplode 
+                && this.Document.State != GameState.BonusSortBalls)
         return;
       foreach (BaseExtraController.ConnectionDescriptor connection in this.Connections)
         connection.Active = false;
@@ -175,6 +176,7 @@ namespace Spinballs.Controller.Extra
       this.LoadControl.BlinkMode = BlinkMode.None;
     }
 
+        // RnD: virtual ?
     public override void HandleTap(Vector2 tapPos, GameTime gameTime)
     {
       base.HandleTap(tapPos, gameTime);

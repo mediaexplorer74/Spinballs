@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Windows.UI.Xaml.Navigation;
 using Spinballs.Core.ScreenManagement;
+using Spinballs.Common.Helper;
 
 namespace Spinballs
 {
@@ -35,20 +36,6 @@ namespace Spinballs
             this.Suspending += OnSuspending;
         }
 
-        // Метод для получения экземпляра игры
-        public static Game1 GetGameInstance()
-        {
-            var appView = Windows.UI.Xaml.Application.Current;
-            var frame = (Windows.UI.Xaml.Controls.Frame)Windows.UI.Xaml.Window.Current.Content;
-            var mainPage = (MainPage)frame.Content;
-            return mainPage._game;
-        }
-
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used such as when the application is launched to open a specific file.
-        /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
@@ -90,11 +77,29 @@ namespace Spinballs
                     // to a new MainPage instance which will handle the MonoGame initialization.
                     Window.Current.Content = new MainPage();
                 }
+
+                // Enable the media features
+                Res.CanUseMusic = true;
+
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
         }
 
+        // Метод для получения экземпляра игры
+        public static Game1 GetGameInstance()
+        {
+            var appView = Windows.UI.Xaml.Application.Current;
+            var frame = (Windows.UI.Xaml.Controls.Frame)Windows.UI.Xaml.Window.Current.Content;
+            var mainPage = (MainPage)frame.Content;
+            return mainPage._game;
+        }
+
+        /// <summary>
+        /// Invoked when the application is launched normally by the end user.  Other entry points
+        /// will be used such as when the application is launched to open a specific file.
+        /// </summary>
+        /// <param name="e">Details about the launch request and process.</param>
         /// <summary>
         /// Invoked when Navigation to a certain page fails
         /// </summary>

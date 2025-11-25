@@ -178,65 +178,105 @@ namespace Spinballs.Core.Controls
 
     public bool HandleInput()
     {
-      bool flag = false;
-      foreach (TouchLocation touchLocation in Res.Input.TouchState)
-      {
-        if (touchLocation.State == TouchLocationState.Pressed)
+        bool flag = false;
+        
+        // Обработка сенсорного ввода
+        foreach (TouchLocation touchLocation in Res.Input.TouchState)
         {
-          flag = this.HandleTap(touchLocation.Position);
-          if (flag)
-            break;
+            if (touchLocation.State == TouchLocationState.Pressed)
+            {
+                Vector2 touchPos = new Vector2(touchLocation.Position.X, touchLocation.Position.Y);
+                if (this.Contains(touchPos)) // Проверяем, что касание происходит внутри панели
+                {
+                    flag = this.HandleTap(touchPos);
+                    if (flag)
+                        break;
+                }
+            }
+            else if (touchLocation.State != TouchLocationState.Invalid)
+            {
+                if (this._musicSlider.Contains(touchLocation.Position))
+                {
+                    this.AdminMusicValue = (float) this._musicSlider.GetValueByPos(touchLocation.Position) / 100f;
+                    Config.Instance.OrigMusicVolume = new float?();
+                }
+                else if (this._soundSlider.Contains(touchLocation.Position))
+                {
+                    this.SoundValue = (float) this._soundSlider.GetValueByPos(touchLocation.Position) / 100f;
+                    Config.Instance.OrigSoundVolume = new float?();
+                    if (touchLocation.State == TouchLocationState.Released)
+                        AudioManager.Play(Res.GameScreen.Sounds.Button);
+                }
+            }
         }
-        else if (touchLocation.State != TouchLocationState.Invalid)
+        
+        // Обработка мышиного ввода
+        if (Res.Input.IsNewMouseButtonPress(MouseButtons.Left))
         {
-          if (this._musicSlider.Contains(touchLocation.Position))
-          {
-            this.AdminMusicValue = (float) this._musicSlider.GetValueByPos(touchLocation.Position) / 100f;
-            Config.Instance.OrigMusicVolume = new float?();
-          }
-          else if (this._soundSlider.Contains(touchLocation.Position))
-          {
-            this.SoundValue = (float) this._soundSlider.GetValueByPos(touchLocation.Position) / 100f;
-            Config.Instance.OrigSoundVolume = new float?();
-            if (touchLocation.State == TouchLocationState.Released)
-              AudioManager.Play(Res.GameScreen.Sounds.Button);
-          }
+            Vector2 mousePos = Res.GetMousePositionInGameCoords();
+            if (this.Contains(mousePos)) // Проверяем, что клик происходит внутри панели
+            {
+                flag = this.HandleTap(mousePos) || flag;
+            }
         }
-      }
-      return flag;
+        
+        return flag;
     }
 
     public bool HandleTap(Vector2 pos)
     {
-      if (this._musicLeft.Contains(pos))
-      {
-        this.StartHighlight(this._musicLeft);
-        this.AdminMusicValue -= 0.2f;
-        Config.Instance.OrigMusicVolume = new float?();
-        return true;
-      }
-      if (this._musicRight.Contains(pos))
-      {
-        this.StartHighlight(this._musicRight);
-        this.AdminMusicValue += 0.2f;
-        Config.Instance.OrigMusicVolume = new float?();
-        return true;
-      }
-      if (this._soundLeft.Contains(pos))
-      {
-        this.StartHighlight(this._soundLeft);
-        this.SoundValue -= 0.2f;
-        Config.Instance.OrigSoundVolume = new float?();
-        AudioManager.Play(Res.GameScreen.Sounds.Button);
-        return true;
-      }
-      if (!this._soundRight.Contains(pos))
-        return false;
-      this.StartHighlight(this._soundRight);
-      this.SoundValue += 0.2f;
-      Config.Instance.OrigSoundVolume = new float?();
-      AudioManager.Play(Res.GameScreen.Sounds.Button);
-      return true;
+        // Проверяем, что точка находится внутри панели
+        if (!this.Contains(pos))
+            return false;
+            
+        // Преобразуем позицию в игровые координаты если нужно
+        Vector2 gamePos = Res.ConvertCoordinates(pos);
+        
+        if (this._musicLeft.Contains(gamePos))
+        {
+            this.StartHighlight(this._musicLeft);
+            this.AdminMusicValue -= 0.2f;
+            Config.Instance.OrigMusicVolume = new float?();
+            return true;
+        }
+        if (this._musicRight.Contains(gamePos))
+        {
+            this.StartHighlight(this._musicRight);
+            this.AdminMusicValue += 0.2f;
+            Config.Instance.OrigMusicVolume = new float?();
+            return true;
+        }
+        if (this._soundLeft.Contains(gamePos))
+        {
+            this.StartHighlight(this._soundLeft);
+            this.SoundValue -= 0.2f;
+            Config.Instance.OrigSoundVolume = new float?();
+            AudioManager.Play(Res.GameScreen.Sounds.Button);
+            return true;
+        }
+        if (this._soundRight.Contains(gamePos))
+        {
+            this.StartHighlight(this._soundRight);
+            this.SoundValue += 0.2f;
+            Config.Instance.OrigSoundVolume = new float?();
+            AudioManager.Play(Res.GameScreen.Sounds.Button);
+            return true;
+        }
+        // Проверяем слайдеры
+        if (this._musicSlider.Contains(gamePos))
+        {
+            this.AdminMusicValue = (float) this._musicSlider.GetValueByPos(gamePos) / 100f;
+            Config.Instance.OrigMusicVolume = new float?();
+            return true;
+        }
+        if (this._soundSlider.Contains(gamePos))
+        {
+            this.SoundValue = (float) this._soundSlider.GetValueByPos(gamePos) / 100f;
+            Config.Instance.OrigSoundVolume = new float?();
+            AudioManager.Play(Res.GameScreen.Sounds.Button);
+            return true;
+        }
+        return false; // Ни один из элементов не был затронут
     }
 
     private void StartHighlight(ImageControl img)

@@ -23,11 +23,39 @@ namespace Spinballs.Common.Helper
     public static InputState Input = new InputState();
     private static bool _canUseMusic;
     public static object LoadGameContentObj = new object();
+    public static Microsoft.Xna.Framework.Vector2 ScaleFactor = Microsoft.Xna.Framework.Vector2.One;
+    public static Microsoft.Xna.Framework.Vector2 ScreenOffset = Microsoft.Xna.Framework.Vector2.Zero;
 
     public static void Init(Game game)
     {
-      Res._game = game;
-      Res._content = Res._game.Content;
+        Res._game = game;
+        Res._content = Res._game.Content;
+    }
+
+    // Метод для преобразования физических координат в игровые координаты
+    public static Microsoft.Xna.Framework.Vector2 ConvertCoordinates(Microsoft.Xna.Framework.Vector2 physicalCoords)
+    {
+        // Преобразование из физических координат в игровые с учетом масштаба и смещения
+        // Только если масштаб не равен единице и смещение не равно нулю
+        if (ScaleFactor.X == 1.0f && ScaleFactor.Y == 1.0f && ScreenOffset.X == 0.0f && ScreenOffset.Y == 0.0f)
+        {
+            // Если масштаб не установлен, возвращаем исходные координаты
+            return physicalCoords;
+        }
+        else
+        {
+            float gameX = (physicalCoords.X - ScreenOffset.X) / ScaleFactor.X;
+            float gameY = (physicalCoords.Y - ScreenOffset.Y) / ScaleFactor.Y;
+            return new Microsoft.Xna.Framework.Vector2(gameX, gameY);
+        }
+    }
+
+    // Метод для получения позиции мыши в игровых координатах
+    public static Microsoft.Xna.Framework.Vector2 GetMousePositionInGameCoords()
+    {
+        var mouseState = Input.CurrentMouseState;
+        Microsoft.Xna.Framework.Vector2 mousePos = new Microsoft.Xna.Framework.Vector2(mouseState.X, mouseState.Y);
+        return ConvertCoordinates(mousePos);
     }
 
     public static Game Game => Res._game;

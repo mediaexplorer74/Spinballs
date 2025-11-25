@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Input.Touch;
 using Spinballs.Common.Helper;
 using Spinballs.Core.Actions;
 using Spinballs.Document;
+using Spinballs.Core;
+using Microsoft.Xna.Framework.Input;
 
 #nullable disable
 namespace Spinballs.Controller
@@ -29,15 +31,37 @@ namespace Spinballs.Controller
 
     public override void Update(GameTime gameTime)
     {
-      if (this.GameScreen.Document.State == GameState.Running)
-      {
-        foreach (TouchLocation touchLocation in Res.Input.TouchState)
+        if (this.GameScreen.Document.State == GameState.Running)
         {
-          if (touchLocation.State == TouchLocationState.Pressed)
-            this.HandleTap(touchLocation.Position, gameTime);
+            // Обработка сенсорного ввода
+            foreach (TouchLocation touchLocation in Res.Input.TouchState)
+            {
+                if (touchLocation.State == TouchLocationState.Pressed)
+                    this.HandleTap(touchLocation.Position, gameTime);
+            }
+
+            // Обработка мышиного ввода
+            if (Res.Input.IsNewMouseButtonPress(MouseButtons.Left))
+            {
+                Vector2 mousePos = Res.GetMousePositionInGameCoords();
+                this.HandleTap(mousePos, gameTime);
+            }
+
+            // Обработка клавиатурного ввода (например, для отладки или альтернативного управления)
+            if (Res.Input.IsNewKeyPress(Keys.Space, new PlayerIndex?(), out PlayerIndex _))
+            {
+                Vector2 centerPos = new Vector2(240f, 400f); // Центр экрана
+                this.HandleTap(centerPos, gameTime);
+            }
+
+            // Обработка ввода с геймпада (например, для действий меню)
+            if (Res.Input.IsNewButtonPress(Buttons.A, new PlayerIndex?(), out PlayerIndex _))
+            {
+                Vector2 centerPos = new Vector2(240f, 400f); // Центр экрана
+                this.HandleTap(centerPos, gameTime);
+            }
         }
-      }
-      this.UpdateCore(gameTime);
+        this.UpdateCore(gameTime);
     }
 
     public GameDocument Document => this.GameScreen.Document;
@@ -47,5 +71,13 @@ namespace Spinballs.Controller
     protected void LockView() => this.Document.StateManager.SetViewLock((object) this);
 
     protected void UnlockView() => this.Document.StateManager.FreeViewLock((object) this);
-  }
+    
+    public override void HandleTap(Vector2 tapPos, GameTime gameTime)
+    {
+        #if DEBUG
+        System.Diagnostics.Debug.WriteLine($"GameController.HandleTap called with position: ({tapPos.X}, {tapPos.Y})");
+        #endif
+        base.HandleTap(tapPos, gameTime);
+    }
+}
 }

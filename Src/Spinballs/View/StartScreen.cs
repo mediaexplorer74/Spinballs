@@ -6,8 +6,10 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Spinballs.Common.Helper;
+using Spinballs.Core;
 using Spinballs.Core.Actions;
 using Spinballs.Core.Controls;
 using Spinballs.Core.ScreenManagement;
@@ -59,6 +61,7 @@ namespace Spinballs.View
       this._buttonBack = new MenuButton(this.ActionManager);
       this._buttonContinue = new MenuButton(this.ActionManager);
       this._buttonMainMenu = new MenuButton(this.ActionManager);
+
       this._buttonFirstGameStart = new MenuButton(this.ActionManager);
       this._buttonStart.Clicked += new EventHandler(this._buttonStart_Clicked);
       this._buttonContinueGame.Clicked += new EventHandler(this._buttonContinueGame_Clicked);
@@ -71,7 +74,9 @@ namespace Spinballs.View
       this._buttonMainMenu.Clicked += new EventHandler(this._buttonMainMenu_Clicked);
       this._buttonBuy.Clicked += new EventHandler(this._buttonBuy_Clicked);
       this._buttonDoBuy.Clicked += new EventHandler(this._buttonDoBuy_Clicked);
+
       this._buttonFirstGameStart.Clicked += new EventHandler(this._buttonFirstGameStart_Clicked);
+      
       this._buttons.AddRange((IEnumerable<DrawableControl>) new MenuButton[7]
       {
         this._buttonStart,
@@ -635,37 +640,70 @@ namespace Spinballs.View
       base.Update(gameTime);
       if (!this.Enabled || !this._buttonsEnabled)
         return;
-      foreach (TouchLocation touchLocation in Res.Input.TouchState)
-      {
-        if (touchLocation.State == TouchLocationState.Pressed)
-        {
-          Vector2 position = touchLocation.Position;
-          bool flag = false;
-          foreach (DrawableControl button in this._buttons)
-          {
-            if (button.Enabled && button.Opacity > (byte) 0 && button.Contains(position))
+
+            
+            foreach (TouchLocation touchLocation in Res.Input.TouchState)
             {
-              button.OnClick((object) this);
-              flag = true;
-              break;
+              if (touchLocation.State == TouchLocationState.Pressed)
+              {
+                Vector2 position = touchLocation.Position;
+                bool flag = false;
+                foreach (DrawableControl button in this._buttons)
+                {
+                  if (button.Enabled && button.Opacity > (byte) 0 && button.Contains(position))
+                  {
+                    button.OnClick((object) this);
+                    flag = true;
+                    break;
+                  }
+                }
+                if (!flag)
+                {
+                  if (this._buttonBack.Opacity > (byte) 0 && this._buttonBack.Contains(position))
+                    this._buttonBack.OnClick((object) this);
+                  else if (this._buttonMainMenu.Opacity > (byte) 0 && this._buttonMainMenu.Contains(position))
+                    this._buttonMainMenu.OnClick((object) this);
+                  else if (this._buttonContinue.Opacity > (byte) 0 && this._buttonContinue.Contains(position))
+                    this._buttonContinue.OnClick((object) this);
+                  else if (this._buttonDoBuy.Opacity > (byte) 0 && this._buttonDoBuy.Contains(position))
+                    this._buttonDoBuy.OnClick((object) this);
+                  else if (this._buttonFirstGameStart.Opacity > (byte) 0 && this._buttonFirstGameStart.Contains(position))
+                    this._buttonFirstGameStart.OnClick((object) this);
+                }
+              }
             }
-          }
-          if (!flag)
-          {
-            if (this._buttonBack.Opacity > (byte) 0 && this._buttonBack.Contains(position))
-              this._buttonBack.OnClick((object) this);
-            else if (this._buttonMainMenu.Opacity > (byte) 0 && this._buttonMainMenu.Contains(position))
-              this._buttonMainMenu.OnClick((object) this);
-            else if (this._buttonContinue.Opacity > (byte) 0 && this._buttonContinue.Contains(position))
-              this._buttonContinue.OnClick((object) this);
-            else if (this._buttonDoBuy.Opacity > (byte) 0 && this._buttonDoBuy.Contains(position))
-              this._buttonDoBuy.OnClick((object) this);
-            else if (this._buttonFirstGameStart.Opacity > (byte) 0 && this._buttonFirstGameStart.Contains(position))
-              this._buttonFirstGameStart.OnClick((object) this);
-          }
-        }
-      }
-      if (!this._panelSettings.Visible || this._panelSettings.Opacity <= (byte) 0)
+
+            // Обработка мышиных событий с преобразованием координат
+            if (Res.Input.IsNewMouseButtonPress(MouseButtons.Left))
+            {
+                Vector2 mousePos = Res.GetMousePositionInGameCoords();
+                bool flag = false;
+                foreach (DrawableControl button in this._buttons)
+                {
+                    if (button.Enabled && button.Opacity > (byte)0 && button.Contains(mousePos))
+                    {
+                        button.OnClick((object)this);
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag)
+                {
+                    if (this._buttonBack.Opacity > (byte)0 && this._buttonBack.Contains(mousePos))
+                        this._buttonBack.OnClick((object)this);
+                    else if (this._buttonMainMenu.Opacity > (byte)0 && this._buttonMainMenu.Contains(mousePos))
+                        this._buttonMainMenu.OnClick((object)this);
+                    else if (this._buttonContinue.Opacity > (byte)0 && this._buttonContinue.Contains(mousePos))
+                        this._buttonContinue.OnClick((object)this);
+                    else if (this._buttonDoBuy.Opacity > (byte)0 && this._buttonDoBuy.Contains(mousePos))
+                        this._buttonDoBuy.OnClick((object)this);
+                    else if (this._buttonFirstGameStart.Opacity > (byte)0 && this._buttonFirstGameStart.Contains(mousePos))
+                        this._buttonFirstGameStart.OnClick((object)this);
+                }
+            }
+
+
+            if (!this._panelSettings.Visible || this._panelSettings.Opacity <= (byte) 0)
         return;
       this._panelSettings.HandleInput();
     }
@@ -673,8 +711,10 @@ namespace Spinballs.View
     protected override void DrawCore(SpriteBatch spriteBatch, GameTime gameTime)
     {
       this._logoHighlight.Draw(Res.SpriteBatch);
+      
       foreach (DrawableControl button in this._buttons)
         button.Draw(spriteBatch);
+
       this._panelSettings.Draw(spriteBatch);
       this._panelHighscore.Draw(spriteBatch);
       this._panelTutorial1.Draw(spriteBatch);
