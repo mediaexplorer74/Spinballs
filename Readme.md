@@ -19,8 +19,8 @@ I found veery Spinballs old theme on 4PDA site. I tried that oldie, but game don
 - PC: game runs ok... but no game-screen autoscaling after window resize
 - Lumia 950 smartphone: no touch support (coordinate transfer problems?), and no screen autoscaling  
 - Game save/load damaged
-- Temporary game over blocked by me (for game debug simplify.) 
-- Language strings ot ready (only tech. words at now)
+- God mode on: game over blocked by me (for game debug simplify.) 
+- Language strings not ready (only tech. words at now)
 
 ## Tech details
 - UWP app (micro-game)
