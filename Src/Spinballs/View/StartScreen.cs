@@ -447,6 +447,9 @@ namespace Spinballs.View
     private void _buttonExit_Clicked(object sender, EventArgs e)
     {
       this._buttonsEnabled = false;
+      // Явно сохраняем конфигурацию перед выходом через меню,
+      // так как OnSuspending может не вызываться при Res.Game.Exit()
+      Spinballs.Common.Helper.Config.Instance.Save();
       Res.Game.Exit();
     }
 
@@ -613,7 +616,8 @@ namespace Spinballs.View
     {
       if (this._panelSettings.Opacity > (byte) 0 || this._panelHighscore.Opacity > (byte) 0)
         this._buttonBack_Clicked((object) null, (EventArgs) null);
-      else if (this._panelTutorial1.Opacity > (byte) 0 || this._panelTutorial2.Opacity > (byte) 0 || this._panelTutorial3.Opacity > (byte) 0 || this._panelTrial.Opacity > (byte) 0)
+      else if (this._panelTutorial1.Opacity > (byte) 0 || this._panelTutorial2.Opacity > (byte) 0 
+                || this._panelTutorial3.Opacity > (byte) 0 || this._panelTrial.Opacity > (byte) 0)
         this._buttonMainMenu_Clicked((object) null, (EventArgs) null);
       else
         base.OnBackButton(gameTime);
@@ -641,80 +645,64 @@ namespace Spinballs.View
       if (!this.Enabled || !this._buttonsEnabled)
         return;
 
-            
-            foreach (TouchLocation touchLocation in Res.Input.TouchState)
-            {
-              if (touchLocation.State == TouchLocationState.Pressed)
-              {
-                Vector2 position = touchLocation.Position;
-                bool flag = false;
-                foreach (DrawableControl button in this._buttons)
-                {
-                  if (button.Enabled && button.Opacity > (byte) 0 && button.Contains(position))
-                  {
-                    button.OnClick((object) this);
-                    flag = true;
-                    break;
-                  }
-                }
-                if (!flag)
-                {
-                  if (this._buttonBack.Opacity > (byte) 0 && this._buttonBack.Contains(position))
-                    this._buttonBack.OnClick((object) this);
-                  else if (this._buttonMainMenu.Opacity > (byte) 0 && this._buttonMainMenu.Contains(position))
-                    this._buttonMainMenu.OnClick((object) this);
-                  else if (this._buttonContinue.Opacity > (byte) 0 && this._buttonContinue.Contains(position))
-                    this._buttonContinue.OnClick((object) this);
-                  else if (this._buttonDoBuy.Opacity > (byte) 0 && this._buttonDoBuy.Contains(position))
-                    this._buttonDoBuy.OnClick((object) this);
-                  else if (this._buttonFirstGameStart.Opacity > (byte) 0 && this._buttonFirstGameStart.Contains(position))
-                    this._buttonFirstGameStart.OnClick((object) this);
-                }
-              }
-            }
+      foreach (TouchLocation touchLocation in Res.Input.TouchState)
+      {
+        if (touchLocation.State == TouchLocationState.Pressed)
+        {
+          // Тач приходит в физических координатах, переводим в игровые и используем общую логику HandleTap
+          Vector2 gamePos = Res.ConvertCoordinates(touchLocation.Position);
+          this.HandleTap(gamePos, gameTime);
+        }
+      }
 
-            // Обработка мышиных событий с преобразованием координат
-            if (Res.Input.IsNewMouseButtonPress(MouseButtons.Left))
-            {
-                Vector2 mousePos = Res.GetMousePositionInGameCoords();
-                bool flag = false;
-                foreach (DrawableControl button in this._buttons)
-                {
-                    if (button.Enabled && button.Opacity > (byte)0 && button.Contains(mousePos))
-                    {
-                        button.OnClick((object)this);
-                        flag = true;
-                        break;
-                    }
-                }
-                if (!flag)
-                {
-                    if (this._buttonBack.Opacity > (byte)0 && this._buttonBack.Contains(mousePos))
-                        this._buttonBack.OnClick((object)this);
-                    else if (this._buttonMainMenu.Opacity > (byte)0 && this._buttonMainMenu.Contains(mousePos))
-                        this._buttonMainMenu.OnClick((object)this);
-                    else if (this._buttonContinue.Opacity > (byte)0 && this._buttonContinue.Contains(mousePos))
-                        this._buttonContinue.OnClick((object)this);
-                    else if (this._buttonDoBuy.Opacity > (byte)0 && this._buttonDoBuy.Contains(mousePos))
-                        this._buttonDoBuy.OnClick((object)this);
-                    else if (this._buttonFirstGameStart.Opacity > (byte)0 && this._buttonFirstGameStart.Contains(mousePos))
-                        this._buttonFirstGameStart.OnClick((object)this);
-                }
-            }
+      // Явная обработка мыши: новый клик левой кнопкой → HandleTap в игровых координатах
+      if (Res.Input.IsNewMouseButtonPress(MouseButtons.Left))
+      {
+        Vector2 mousePos = Res.GetMousePositionInGameCoords();
+        this.HandleTap(mousePos, gameTime);
+      }
 
-
-            if (!this._panelSettings.Visible || this._panelSettings.Opacity <= (byte) 0)
+      if (!this._panelSettings.Visible || this._panelSettings.Opacity <= (byte) 0)
         return;
       this._panelSettings.HandleInput();
+    }
+
+    public override void HandleTap(Vector2 tapPos, GameTime gameTime)
+    {
+      if (!this.Enabled || !this._buttonsEnabled)
+        return;
+
+      bool handled = false;
+      foreach (DrawableControl button in this._buttons)
+      {
+        if (button.Enabled && button.Opacity > (byte)0 && button.Contains(tapPos))
+        {
+          button.OnClick((object)this);
+          handled = true;
+          break;
+        }
+      }
+
+      if (!handled)
+      {
+        if (this._buttonBack.Opacity > (byte)0 && this._buttonBack.Contains(tapPos))
+          this._buttonBack.OnClick((object)this);
+        else if (this._buttonMainMenu.Opacity > (byte)0 && this._buttonMainMenu.Contains(tapPos))
+          this._buttonMainMenu.OnClick((object)this);
+        else if (this._buttonContinue.Opacity > (byte)0 && this._buttonContinue.Contains(tapPos))
+          this._buttonContinue.OnClick((object)this);
+        else if (this._buttonDoBuy.Opacity > (byte)0 && this._buttonDoBuy.Contains(tapPos))
+          this._buttonDoBuy.OnClick((object)this);
+        else if (this._buttonFirstGameStart.Opacity > (byte)0 && this._buttonFirstGameStart.Contains(tapPos))
+          this._buttonFirstGameStart.OnClick((object)this);
+      }
     }
 
     protected override void DrawCore(SpriteBatch spriteBatch, GameTime gameTime)
     {
       this._logoHighlight.Draw(Res.SpriteBatch);
-      
       foreach (DrawableControl button in this._buttons)
         button.Draw(spriteBatch);
-
       this._panelSettings.Draw(spriteBatch);
       this._panelHighscore.Draw(spriteBatch);
       this._panelTutorial1.Draw(spriteBatch);

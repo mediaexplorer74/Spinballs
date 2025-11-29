@@ -27,7 +27,7 @@ namespace Spinballs.Core.ScreenManagement
         private TimeSpan _transitionDuration;
         private TimeSpan _transitionStart;
         private TimeSpan _transitionDelay;
-        private bool _transitionStarted = false;
+        private bool _transitionStarted;
         
         public static SaveGame PendingSaveGame { get; set; }
 
@@ -145,18 +145,14 @@ namespace Spinballs.Core.ScreenManagement
                 if (!this._transitionScreen.ContentLoaded)
                     this._transitionScreen.LoadContent();
                 ActionSequence action = new ActionSequence();
-
-                if (this._transitionDelay != TimeSpan.Zero 
-                    && (this._transitionDelay - (ScreenManager.GameTime.TotalGameTime - this._transitionStart)).TotalMilliseconds > 0.0)
+                if (this._transitionDelay != TimeSpan.Zero && (this._transitionDelay - (ScreenManager.GameTime.TotalGameTime - this._transitionStart)).TotalMilliseconds > 0.0)
                     action.Actions.Add((ActionBase) new ActionDuration(this._transitionDelay));
-
                 action.Actions.Add((ActionBase) new ActionFadeIn((DrawableControl) this._transitionScreen, this._transitionDuration));
                 action.ActionFinished += new EventHandler(this._transitionAction_ActionFinished);
                 this._actionManager.Add((ActionBase) action);
             }
             else
             {
-                //RnD
                 ScreenManager.ActiveScreen = this._transitionScreen;
                 this._transitionScreen = (BaseScreen) null;
                 this._transitionDuration = TimeSpan.Zero;
@@ -165,10 +161,9 @@ namespace Spinballs.Core.ScreenManagement
 
         private void _transitionAction_ActionFinished(object sender, EventArgs e)
         {
-            //RnD
+            // RnD: if...
             if (this._transitionScreen != null)
-              ScreenManager.ActiveScreen = this._transitionScreen;
-
+                ScreenManager.ActiveScreen = this._transitionScreen;
             this._transitionScreen = (BaseScreen) null;
             this._transitionDuration = TimeSpan.Zero;
         }
@@ -192,6 +187,7 @@ namespace Spinballs.Core.ScreenManagement
                 screen.Value.UnloadContent();
         }
 
+        
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -201,7 +197,6 @@ namespace Spinballs.Core.ScreenManagement
             if (this._printMemoryUsage && (gameTime.TotalGameTime - this._debugTestTime).TotalMilliseconds > 2000.0)
                 this._debugTestTime = gameTime.TotalGameTime;
             Res.Input.Update();
-            // RnD
             if (ScreenManager.ActiveScreen != null)
                 ScreenManager.ActiveScreen.Update(gameTime);
             if (this._transitionScreen == null || !this._transitionScreen.ContentLoaded)
@@ -229,7 +224,6 @@ namespace Spinballs.Core.ScreenManagement
         {
             if (savegame.ActiveScreenId < 0)
                 return;
-            
             BaseScreen screen = this.Screens[savegame.ActiveScreenId];
             screen.IsNewGame = false;
             if (!screen.ContentLoaded)

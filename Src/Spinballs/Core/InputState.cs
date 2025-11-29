@@ -34,6 +34,7 @@ namespace Spinballs.Core
       this.GamePadWasConnected = new bool[4];
     }
 
+    
     public void Update()
     {
         for (int index = 0; index < 4; ++index)
@@ -53,6 +54,7 @@ namespace Spinballs.Core
         // Обновляем состояние мыши
         this.LastMouseState = this.CurrentMouseState;
         this.CurrentMouseState = Mouse.GetState();
+        
         
         // Добавляем диагностику для отслеживания состояния ввода
         #if DEBUG
@@ -133,22 +135,18 @@ namespace Spinballs.Core
 
     public bool IsNewMouseButtonPress(MouseButtons button)
     {
-            // Обновляем состояние мыши
-            //this.LastMouseState = this.CurrentMouseState;
-            this.CurrentMouseState = Mouse.GetState();
-            //switch (button)
-            //{
-            //    case MouseButtons.Left:
-                      
-            if (this.CurrentMouseState.LeftButton == ButtonState.Pressed)//&& this.LastMouseState.LeftButton == ButtonState.Released)
+        //switch (button)
+        //{
+            //case MouseButtons.Left:
+            if (this.CurrentMouseState.LeftButton == ButtonState.Pressed && this.LastMouseState.LeftButton == ButtonState.Released)
                 return true;
-            //    case MouseButtons.Right:
-            if (this.CurrentMouseState.RightButton == ButtonState.Pressed)// && this.LastMouseState.RightButton == ButtonState.Released)
+            //case MouseButtons.Right:
+            if (this.CurrentMouseState.RightButton == ButtonState.Pressed && this.LastMouseState.RightButton == ButtonState.Released) 
                 return true;
-            //    case MouseButtons.Middle:
-            if (this.CurrentMouseState.MiddleButton == ButtonState.Pressed)// && this.LastMouseState.MiddleButton == ButtonState.Released)
+            //case MouseButtons.Middle:
+            if (this.CurrentMouseState.MiddleButton == ButtonState.Pressed && this.LastMouseState.MiddleButton == ButtonState.Released)
                 return true;
-        //    default:
+            //default:
                 return false;
         //}
     }

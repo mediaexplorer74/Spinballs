@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using Spinballs.Common.Helper;
+using Spinballs.Core;
 using Spinballs.Core.Actions;
 using Spinballs.Core.Controls;
 using Spinballs.Document;
@@ -74,7 +75,19 @@ namespace Spinballs.Controller
         foreach (TouchLocation touchLocation in Res.Input.TouchState)
         {
           if (touchLocation.State == TouchLocationState.Pressed)
-            this.HandleTap(touchLocation.Position, gameTime);
+          {
+            // TouchLocation.Position приходит в физических координатах экрана,
+            // поэтому преобразуем их в игровые координаты перед обработкой.
+            Vector2 gamePos = Res.ConvertCoordinates(touchLocation.Position);
+            this.HandleTap(gamePos, gameTime);
+          }
+        }
+
+        // Обработка клика мышью на экране Game Over
+        if (Res.Input.IsNewMouseButtonPress(MouseButtons.Left))
+        {
+          Vector2 mousePos = Res.GetMousePositionInGameCoords();
+          this.HandleTap(mousePos, gameTime);
         }
       }
       this.UpdateCore(gameTime);

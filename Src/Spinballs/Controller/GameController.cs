@@ -37,7 +37,12 @@ namespace Spinballs.Controller
             foreach (TouchLocation touchLocation in Res.Input.TouchState)
             {
                 if (touchLocation.State == TouchLocationState.Pressed)
-                    this.HandleTap(touchLocation.Position, gameTime);
+                {
+                    // TouchLocation.Position приходит в физических координатах экрана,
+                    // поэтому преобразуем их в игровые координаты перед обработкой.
+                    Vector2 gamePos = Res.ConvertCoordinates(touchLocation.Position);
+                    this.HandleTap(gamePos, gameTime);
+                }
             }
 
             // Обработка мышиного ввода

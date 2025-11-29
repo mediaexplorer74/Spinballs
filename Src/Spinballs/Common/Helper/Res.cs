@@ -36,18 +36,10 @@ namespace Spinballs.Common.Helper
     public static Microsoft.Xna.Framework.Vector2 ConvertCoordinates(Microsoft.Xna.Framework.Vector2 physicalCoords)
     {
         // Преобразование из физических координат в игровые с учетом масштаба и смещения
-        // Только если масштаб не равен единице и смещение не равно нулю
-        if (ScaleFactor.X == 1.0f && ScaleFactor.Y == 1.0f && ScreenOffset.X == 0.0f && ScreenOffset.Y == 0.0f)
-        {
-            // Если масштаб не установлен, возвращаем исходные координаты
-            return physicalCoords;
-        }
-        else
-        {
-            float gameX = (physicalCoords.X - ScreenOffset.X) / ScaleFactor.X;
-            float gameY = (physicalCoords.Y - ScreenOffset.Y) / ScaleFactor.Y;
-            return new Microsoft.Xna.Framework.Vector2(gameX, gameY);
-        }
+        // Обратное преобразование к исходным игровым координатам
+        float gameX = (physicalCoords.X - ScreenOffset.X) / ScaleFactor.X;
+        float gameY = (physicalCoords.Y - ScreenOffset.Y) / ScaleFactor.Y;
+        return new Microsoft.Xna.Framework.Vector2(gameX, gameY);
     }
 
     // Метод для получения позиции мыши в игровых координатах
@@ -143,24 +135,87 @@ namespace Spinballs.Common.Helper
 
     public sealed class Font
     {
-      public static SpriteFont Default => Res._content.Load<SpriteFont>("Common/FontDefault");
+            public static SpriteFont Default
+            {
+                get
+                {
+                    // return Res._content.Load<SpriteFont>("font");
+                    return Res._content.Load<SpriteFont>("Common/FontDefault");
+                }
+            }
 
-      public static SpriteFont Medium => Res._content.Load<SpriteFont>("Common/FontMedium");
+            public static SpriteFont Medium
+            {
+                get
+                {
+                    // return Res._content.Load<SpriteFont>("font");
+                    return Res._content.Load<SpriteFont>("Common/FontMedium");
+                }
+            }
 
-      public static SpriteFont Small => Res._content.Load<SpriteFont>("Common/FontSmall");
+            public static SpriteFont Small
+            {
+                get
+                {
+                    // return Res._content.Load<SpriteFont>("font");
+                    return Res._content.Load<SpriteFont>("Common/FontSmall");
+                }
+            }
 
-      public static SpriteFont Big => Res._content.Load<SpriteFont>("Common/FontBig");
+            public static SpriteFont Big
+            {
+                get
+                {
+                    // return Res._content.Load<SpriteFont>("font");
+                    return Res._content.Load<SpriteFont>("Common/FontBig");
+                }
+            }
 
-      public static SpriteFont Big2 => Res._content.Load<SpriteFont>("Common/FontBig2");
+            public static SpriteFont Big2
+            {
+                get
+                {
+                    // return Res._content.Load<SpriteFont>("font");
+                    return Res._content.Load<SpriteFont>("Common/FontBig2");
+                }
+            }
 
-      public static SpriteFont Big3 => Res._content.Load<SpriteFont>("Common/FontBig3");
+            public static SpriteFont Big3
+            {
+                get
+                {
+                    // return Res._content.Load<SpriteFont>("font");
+                    return Res._content.Load<SpriteFont>("Common/FontBig3");
+                }
+            }
 
-      public static SpriteFont Big4 => Res._content.Load<SpriteFont>("Common/FontBig4");
+            public static SpriteFont Big4
+            {
+                get
+                {
+                    // return Res._content.Load<SpriteFont>("font");
+                    return Res._content.Load<SpriteFont>("Common/FontBig4");
+                }
+            }
 
-      public static SpriteFont Big5 => Res._content.Load<SpriteFont>("Common/FontBig5");
+            public static SpriteFont Big5
+            {
+                get
+                {
+                    // return Res._content.Load<SpriteFont>("font");
+                    return Res._content.Load<SpriteFont>("Common/FontBig5");
+                }
+            }
 
-      public static SpriteFont Big8 => Res._content.Load<SpriteFont>("Common/FontBig8");
-    }
+            public static SpriteFont Big8
+            {
+                get
+                {
+                    // return Res._content.Load<SpriteFont>("font");
+                    return Res._content.Load<SpriteFont>("Common/FontBig8");
+                }
+            }
+        }
 
     public sealed class FontSegoe
     {

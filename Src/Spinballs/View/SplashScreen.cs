@@ -40,8 +40,7 @@ namespace Spinballs.View
       this._points.Texture = Res.Common.LoadIconText;
       this._points.Size = new Vector2(256f, 86f);
       this._points.Position = Layout.SplashPoints;
-      this._actionHighlight = (ActionBase) 
-                new ActionRepeat((ActionBase) new ActionFadeIn((DrawableControl) this._points, TimeSpan.FromMilliseconds(1000.0)));
+      this._actionHighlight = (ActionBase) new ActionRepeat((ActionBase) new ActionFadeIn((DrawableControl) this._points, TimeSpan.FromMilliseconds(1000.0)));
       this._actionHighlight.ActionManager = this.ActionManager;
       this._actionHighlight.Start();
       // Загружаем ресурсы в текущем потоке, так как Thread не доступен в UWP
@@ -67,7 +66,7 @@ namespace Spinballs.View
     public override void Draw(GameTime gameTime)
     {
       Res.Game.GraphicsDevice.Clear(Color.Black);
-      Res.SpriteBatch.Begin();
+      Res.SpriteBatch.Begin(transformMatrix: ((Game1)Res.Game).globalTransformation, samplerState: SamplerState.PointClamp);
       this.DrawCore(Res.SpriteBatch, gameTime);
       Res.SpriteBatch.End();
     }

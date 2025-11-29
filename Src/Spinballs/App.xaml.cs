@@ -89,10 +89,20 @@ namespace Spinballs
         // Метод для получения экземпляра игры
         public static Game1 GetGameInstance()
         {
-            var appView = Windows.UI.Xaml.Application.Current;
-            var frame = (Windows.UI.Xaml.Controls.Frame)Windows.UI.Xaml.Window.Current.Content;
-            var mainPage = (MainPage)frame.Content;
-            return mainPage._game;
+            // В разных моментах жизненного цикла Window.Current.Content может быть
+            // либо непосредственно MainPage, либо Frame, внутри которого лежит MainPage.
+            var content = Windows.UI.Xaml.Window.Current.Content;
+
+            // Пытаемся сначала получить MainPage напрямую
+            var mainPage = content as MainPage;
+
+            // Если содержимое окна — Frame, ищем MainPage внутри него
+            if (mainPage == null && content is Windows.UI.Xaml.Controls.Frame frame)
+            {
+                mainPage = frame.Content as MainPage;
+            }
+
+            return mainPage != null ? mainPage._game : null;
         }
 
         /// <summary>
@@ -121,16 +131,25 @@ namespace Spinballs
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             // Save application state and stop any background activity
-            /*var game = GetGameInstance();
-            if (game != null && game.ScreenManager != null)
+
+            try
             {
-                var savegame = new Spinballs.Common.Helper.SaveGame();
-                if (game.ScreenManager.Save(savegame))
+                var game = GetGameInstance();
+                if (game != null && game.ScreenManager != null)
                 {
-                    savegame.Save();
+                    var savegame = new Spinballs.Common.Helper.SaveGame();
+                    if (game.ScreenManager.Save(savegame))
+                    {
+                        savegame.Save();
+                    }
                 }
             }
-            Spinballs.Common.Helper.Config.Instance.Save();*/
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[ex] App.xaml.cs - OnSuspending - SaveGame handling error: " + ex.Message);
+            }
+
+            Spinballs.Common.Helper.Config.Instance.Save();
             deferral.Complete();
         }
     }

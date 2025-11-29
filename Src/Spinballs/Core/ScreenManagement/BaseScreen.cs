@@ -7,6 +7,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using Spinballs.Common.Helper;
 using Spinballs.Core.Actions;
 using Spinballs.Core.Controls;
@@ -145,7 +146,8 @@ namespace Spinballs.Core.ScreenManagement
 
     public virtual void Draw(GameTime gameTime)
     {
-      Res.SpriteBatch.Begin();
+      // Используем матрицу трансформации из Game1 для согласованности с остальной частью игры
+      Res.SpriteBatch.Begin(transformMatrix: ((Game1)Res.Game).globalTransformation, samplerState: SamplerState.PointClamp);
       this.Draw(Res.SpriteBatch);
       this.DrawCore(Res.SpriteBatch, gameTime);
       Res.SpriteBatch.End();

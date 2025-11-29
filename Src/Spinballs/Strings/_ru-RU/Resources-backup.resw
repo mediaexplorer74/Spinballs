@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="BuyGame" xml:space="preserve">
+    <value>Купить</value>
+  </data>
+  <data name="BestScore" xml:space="preserve">
+    <value>Лучший результат</value>
+  </data>
+  <data name="Spinballs" xml:space="preserve">
+    <value>Спинболы</value>
+  </data>
+  <data name="ContinueGame" xml:space="preserve">
+    <value>Продолжить игру</value>
+  </data>
+  <data name="Points" xml:space="preserve">
+    <value>Очки</value>
+  </data>
+  <data name="Tutorial" xml:space="preserve">
+    <value>Подсказки</value>
+  </data>
+  <data name="Tutorial1" xml:space="preserve">
+    <value>Попробуйте соединить шарики одного цвета, нажав на правую сторону диска, чтобы повернуть его по часовой стрелке. Коснитесь левой стороны, чтобы повернуть его против часовой стрелки.</value>
+  </data>
+  <data name="Tutorial3" xml:space="preserve">
+    <value>Загрузите четырех бонусных помощников, убрав шарики рядом с ними. Как только они будут полностью загружены, их можно будет запустить, нажав на них.</value>
+  </data>
+  <data name="Tutorial2" xml:space="preserve">
+    <value>Удалите выделенные шары, нажав кнопку "Выполнить" в нижней части экрана. Число на ней указывает, сколько шаров подключено.</value>
+  </data>
+  <data name="MainMenu" xml:space="preserve">
+    <value>Главное меню</value>
+  </data>
+  <data name="Highscore" xml:space="preserve">
+    <value>Рекорд</value>
+  </data>
+  <data name="Music" xml:space="preserve">
+    <value>Музыка</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Уовень</value>
+  </data>
+  <data name="Trial" xml:space="preserve">
+    <value>Вам нравятся спинболы? Купите себе сегодня полную версию игры Spinballs, чтобы получать неограниченное удовольствие!</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Начать</value>
+  </data>
+  <data name="Sound" xml:space="preserve">
+    <value>Звук</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Продолжить</value>
+  </data>
+  <data name="NewHighScore" xml:space="preserve">
+    <value>Новый рекорд</value>
+  </data>
+  <data name="ExitGame" xml:space="preserve">
+    <value>Выход из игры</value>
+  </data>
+  <data name="GameOver" xml:space="preserve">
+    <value>Игра окончена</value>
+  </data>
+  <data name="PlayAgain" xml:space="preserve">
+    <value>Играть снова</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="TrialTitle" xml:space="preserve">
+    <value>Пробная версия</value>
+  </data>
+  <data name="NoHighScore" xml:space="preserve">
+    <value>Высокий балл не получен</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Регистрация</value>
+  </data>
+  <data name="TutorialTitle" xml:space="preserve">
+    <value>Как играть</value>
+  </data>
+  <data name="GamePaused" xml:space="preserve">
+    <value>Игра приостановлена</value>
+  </data>
+  <data name="Fullversion" xml:space="preserve">
+    <value>Полная версия</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Меню</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Вернуться</value>
+  </data>
+  <data name="Rank" xml:space="preserve">
+    <value>Ранг</value>
+  </data>
+</root>

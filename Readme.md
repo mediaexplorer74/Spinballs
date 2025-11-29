@@ -1,4 +1,4 @@
-# Spinballs 1.1 -- dev branch
+# Spinballs 1.2 -- dev branch
 
 ![Logo](Images/logo.png)
 
@@ -12,8 +12,7 @@ I found veery Spinballs old theme on 4PDA site. I tried that oldie, but game don
 ## Screenshots
 ![](Images/sshot01.png)
 ![](Images/sshot02.png)
-![](Images/sshot03.png)
-![](Images/sshot04.png)
+
 
 ## Status of RnD
 - PC: game runs ok... but no game-screen autoscaling after window resize
@@ -29,24 +28,27 @@ I found veery Spinballs old theme on 4PDA site. I tried that oldie, but game don
 - VSCode/KiloCode's Qwen-3 AI used for simple gamedev "recovering" 
 
 ## Main Tasks realized
-- [+-] Fix game controls (tune touch mode, add mouse mode)
-- [+] Check sound / music theme
-- [+-] Fix screen mode switching (Settings mode needs more testing!)
+- [+] Game controls (tune touch mode, add mouse mode) fixed
+- [+] CSound / music theme, and Settings save/restore fixed
+- [+-] Fix game screen scaling (some Astoria bug still there!)
+
+## Know problems
+- On W10M Astoria, some screen distortion persists... Try to change screen orientation twise :)
+- No Russian localization (no Cyrillic symbols at all xap fonts, so I renamed ru-RU folder to _ru-RU to avoid game crashing!)
 
 
 ## TODO / Current Goal
-- Fix screen auto-scaling
-- Fix touch game control
-- Fix English game phrases & add Russian localization
-- Polish and test final gameplay experience (add some coins, score, lives, wall breaks, etc... ) [optional, of cause - DIY]
+- Polish and test final gameplay experience 
+- Realize game continuation (i.e, tap on High score item to restore game level, score, etc.) 
+- Add some new gamification, such as coins, extra-lives, wall breaks, god-mode, etc... :) 
 
 ## Reference
-- https://4pda.to/forum/index.php?showtopic=218315
+- https://4pda.to/forum/index.php?showtopic=218315 4PDA Windows Phone :: Spinballs archived theme
 
 ## ..
 As is. No support. Educational purposes only / Retro-Coding in pair with AI. Just-for-funnn! 
 
 ## .
-[m][e] Nov, 25 2025
+[m][e] Nov, 29 2025
 
 ![Logo](Images/footer.png)

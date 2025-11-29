@@ -186,23 +186,27 @@ namespace Spinballs.Core.Controls
             if (touchLocation.State == TouchLocationState.Pressed)
             {
                 Vector2 touchPos = new Vector2(touchLocation.Position.X, touchLocation.Position.Y);
-                if (this.Contains(touchPos)) // Проверяем, что касание происходит внутри панели
+                // Преобразуем физические координаты тача в игровые координаты
+                Vector2 gameTouchPos = Res.ConvertCoordinates(touchPos);
+                if (this.Contains(gameTouchPos)) // Проверяем, что касание происходит внутри панели
                 {
-                    flag = this.HandleTap(touchPos);
+                    flag = this.HandleTap(gameTouchPos);
                     if (flag)
                         break;
                 }
             }
             else if (touchLocation.State != TouchLocationState.Invalid)
             {
-                if (this._musicSlider.Contains(touchLocation.Position))
+                // Преобразуем физические координаты тача в игровые координаты
+                Vector2 gameTouchPos = Res.ConvertCoordinates(new Vector2(touchLocation.Position.X, touchLocation.Position.Y));
+                if (this._musicSlider.Contains(gameTouchPos))
                 {
-                    this.AdminMusicValue = (float) this._musicSlider.GetValueByPos(touchLocation.Position) / 100f;
+                    this.AdminMusicValue = (float) this._musicSlider.GetValueByPos(gameTouchPos) / 100f;
                     Config.Instance.OrigMusicVolume = new float?();
                 }
-                else if (this._soundSlider.Contains(touchLocation.Position))
+                else if (this._soundSlider.Contains(gameTouchPos))
                 {
-                    this.SoundValue = (float) this._soundSlider.GetValueByPos(touchLocation.Position) / 100f;
+                    this.SoundValue = (float) this._soundSlider.GetValueByPos(gameTouchPos) / 100f;
                     Config.Instance.OrigSoundVolume = new float?();
                     if (touchLocation.State == TouchLocationState.Released)
                         AudioManager.Play(Res.GameScreen.Sounds.Button);
@@ -229,8 +233,8 @@ namespace Spinballs.Core.Controls
         if (!this.Contains(pos))
             return false;
             
-        // Преобразуем позицию в игровые координаты если нужно
-        Vector2 gamePos = Res.ConvertCoordinates(pos);
+        // Позиция уже в игровых координатах, используем её напрямую
+        Vector2 gamePos = pos;
         
         if (this._musicLeft.Contains(gamePos))
         {

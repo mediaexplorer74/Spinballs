@@ -214,13 +214,50 @@ namespace Spinballs.View
         System.Diagnostics.Debug.WriteLine($"GameScreen.HandleTap called with position: ({tapPos.X}, {tapPos.Y})");
         #endif
         
-        // Вызов базовой реализации
+        // Вызов базовой реализации экрана
         base.HandleTap(tapPos, gameTime);
-        
-        // Обработка нажатия на диски и другие элементы
-        foreach (ControllerBase controller in this._controllerList)
+
+        // Маршрутизация ввода по контроллерам в зависимости от состояния игры,
+        // чтобы оверлеи (пауза, Game Over, Trial) не "пропускали" клики в игровую зону и наоборот
+        switch (this.Document.State)
         {
-            controller.HandleTap(tapPos, gameTime);
+            case GameState.Pause:
+                // Во время паузы обрабатываем ввод только в контроллере меню паузы
+                foreach (ControllerBase controller in this._controllerList)
+                {
+                    if (controller is GameMenuController)
+                        controller.HandleTap(tapPos, gameTime);
+                }
+                break;
+
+            case GameState.End:
+                // На экране Game Over обрабатываем ввод только в GameEndController
+                foreach (ControllerBase controller in this._controllerList)
+                {
+                    if (controller is GameEndController)
+                        controller.HandleTap(tapPos, gameTime);
+                }
+                break;
+
+            case GameState.Trial:
+                // В режиме Trial ввод идёт только в TrialController
+                foreach (ControllerBase controller in this._controllerList)
+                {
+                    if (controller is TrialController)
+                        controller.HandleTap(tapPos, gameTime);
+                }
+                break;
+
+            default:
+                // В обычной игре (Running, Starting и др.) обрабатываем ввод
+                // всеми игровыми контроллерами, кроме оверлеев
+                foreach (ControllerBase controller in this._controllerList)
+                {
+                    if (controller is GameMenuController || controller is GameEndController || controller is TrialController)
+                        continue;
+                    controller.HandleTap(tapPos, gameTime);
+                }
+                break;
         }
     }
 

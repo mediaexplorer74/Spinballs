@@ -110,9 +110,7 @@ namespace Spinballs.Controller
       {
         if (this.TimerBar.Value > 0)
           return;
-
-        // Stop gameover? =)
-        //this.Document.State = GameState.End;
+        this.Document.State = GameState.End;
       }
     }
 

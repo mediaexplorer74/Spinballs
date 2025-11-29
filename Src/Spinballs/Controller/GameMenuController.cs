@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using Spinballs.Common.Helper;
+using Spinballs.Core;
 using Spinballs.Core.Actions;
 using Spinballs.Core.Controls;
 using Spinballs.Document;
@@ -90,11 +91,6 @@ namespace Spinballs.Controller
         actionParallel.Actions.Add((ActionBase) new ActionFadeIn((DrawableControl) this._labelPaused, dialogFadeTime));
         actionParallel.Actions.Add((ActionBase) new ActionFadeIn((DrawableControl) this._buttonContinue, dialogFadeTime));
         actionParallel.Actions.Add((ActionBase) new ActionFadeIn((DrawableControl) this._buttonExit, dialogFadeTime));
-        if ((double) Config.Instance.MusicVolume > 0.0)
-        {
-          actionParallel.Actions.Add((ActionBase) new ActionMusicFade(0.0f, dialogFadeTime));
-          Config.Instance.OrigMusicVolume = new float?(Config.Instance.MusicVolume);
-        }
       }
       else
       {
@@ -103,11 +99,6 @@ namespace Spinballs.Controller
         actionParallel.Actions.Add((ActionBase) new ActionFadeOut((DrawableControl) this._labelPaused, dialogFadeTime));
         actionParallel.Actions.Add((ActionBase) new ActionFadeOut((DrawableControl) this._buttonContinue, dialogFadeTime));
         actionParallel.Actions.Add((ActionBase) new ActionFadeOut((DrawableControl) this._buttonExit, dialogFadeTime));
-        if (Config.Instance.OrigMusicVolume.HasValue && (double) Config.Instance.MusicVolume != (double) this._panel.MusicValue)
-        {
-          actionParallel.Actions.Add((ActionBase) new ActionMusicFade(this._panel.MusicValue, dialogFadeTime));
-          Config.Instance.OrigMusicVolume = new float?();
-        }
       }
       ActionBase actionBase = (ActionBase) actionParallel;
       if (delay != TimeSpan.Zero)
@@ -132,7 +123,19 @@ namespace Spinballs.Controller
         foreach (TouchLocation touchLocation in Res.Input.TouchState)
         {
           if (touchLocation.State == TouchLocationState.Pressed)
-            this.HandleTap(touchLocation.Position, gameTime);
+          {
+            // TouchLocation.Position в паузе также приходит в физических координатах,
+            // поэтому переводим в игровые координаты.
+            Vector2 gamePos = Res.ConvertCoordinates(touchLocation.Position);
+            this.HandleTap(gamePos, gameTime);
+          }
+        }
+
+        // Обработка клика мышью в меню паузы
+        if (Res.Input.IsNewMouseButtonPress(MouseButtons.Left))
+        {
+          Vector2 mousePos = Res.GetMousePositionInGameCoords();
+          this.HandleTap(mousePos, gameTime);
         }
       }
       this.UpdateCore(gameTime);
